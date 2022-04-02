@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+
+<form action="/send" method="POST">
+Otsikko: <br> <input type="text" name="title"> <br>
+Viesti:<br> <textarea name="message"></textarea><br>
+<input type="submit" value="Lähetä">
+<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+</form>
+

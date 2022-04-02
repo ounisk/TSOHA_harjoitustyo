@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<style>
+a {
+    color:hotpink;
+    text-decoration: none;
+}
+</style>
+
+
+<h1>Tervetuloa Tsoha-kurssin keskustelupalstalle!</h1>
+<p>
+<hr>
+<h2>Aiheet:</h2><br>
+
+{%for topic in topics%}
+<a href="/topic/{{topic.id}}">{{topic.topic}}</a> <br>
+{%endfor%}<br>
+<hr>
+<p>
+<p>
+Kirjaudu sisään:
+<p>
+{% if session.user_id %}
+<p>Olet kirjautunut nimellä {{ session.username }}</p>
+<a href="/logout">Kirjaudu ulos</a> <br>
+{% else %}
+<a href="/login">Kirjaudu</a><br>
+{% endif %}
+<p>
