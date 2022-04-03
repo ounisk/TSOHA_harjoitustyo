@@ -1,3 +1,18 @@
+## Välipalautus 2:
+- Sovellus on vasta aluillaan ja pahasti kesken - testausta ei juurikaan pysty tekemään. 
+- Ensimmäisen 2 viikon aikana olen käynyt materiaalin läpi, käyttänyt aikaa PostgreSQL:n ja Herokun asentamiseen ja suunnitellut sovelluksen toteutusta. Viikolla 3 olen päässyt toteutuksen ja ohjelmoinnin pariin.
+- Sovelluksen taulut, pohja ja toiminnallisuuksia on luotu - kaikki on Gitissä.
+- Sovellus on [Herokussa](https://tsoha-discussionapp.herokuapp.com/). Testausta varten on luotu käyttäjä - käyttäjätunnus: testaaja, salasana: testi123, mutta sisäänkirjautuminen EI toimi (tulee "Bad request" virheilmoitus).
+- Herokun tietokantaan olen INSERT-komennoilla luonut muutamia aiheita, jotta varmistun, että etusivu näyttää jokseenkin halutunlaiselta.
+- TODO: 
+    - toiminnallisuuksien kehittäminen edelleen mm.
+        - sisäänkirjautuminen toimivaksi 
+        - viestien kirjoitus ja toteutus niin, että ohjaantuvat oikeaan ketjuun ja aiheeseen
+    - tietoturva seikkojen huomioiminen ja toteutus
+    - ulkoasun hiominen
+
+
+
 # Keskustelusovellus
 
 ### Projektin kuvaus: 
