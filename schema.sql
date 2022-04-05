@@ -1,6 +1,6 @@
 CREATE TABLE allusers (
     id SERIAL PRIMARY KEY,
-    username TEXT,
+    username TEXT UNIQUE,
     password TEXT,
     admin BOOLEAN DEFAULT false
 );
