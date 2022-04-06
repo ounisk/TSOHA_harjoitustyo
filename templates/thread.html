@@ -10,10 +10,10 @@ a {
 <h1>Tervetuloa Tsoha-kurssin keskustelupalstalle!</h1>
 <p>
 <hr>
-<h2>{{topic}}</h2><br>
+<h2>{{topic.topic}}</h2><br>
 
 {%for message in allmessages%}
-<a {{message.content}}, {{message.user_id}, {{message.sent_at}} </a> <br>
+<p {{message.content}}, {{message.user_id}, {{message.sent_at}} </p> <br>
 {%endfor%}<br>
 <hr>
 <p>
