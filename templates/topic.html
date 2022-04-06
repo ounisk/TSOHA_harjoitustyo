@@ -10,10 +10,10 @@ a {
 <h1>Tervetuloa Tsoha-kurssin keskustelupalstalle!</h1>
 <p>
 <hr>
-<h2>{{topic}}</h2><br>
+<h2>{{topic.topic}}</h2><br>
 
 {%for thread in threads%}
-<a href="/topic/{{topic_id}}/thread/{{thread.id}}"{{thread.id}} </a> <br>
+<a href="/topic/{{topic_id}}/thread/{{thread.id}}">{{thread.id}} </a> <br>
 {%endfor%}<br>
 <hr>
 <p>
