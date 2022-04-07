@@ -8,6 +8,12 @@ def index():
     list=messages.get_list()
     return render_template("index.html", topics=list)    # add: no. of threads, no. of messages and time of last msg
 
+@app.route("topic/<int:topic_id>")  # 7.4
+def topic(topic_id):
+    list=messages.get_threads(topic_id)
+    name=messages.get_topic_name(topic_id)
+    return render_template("topic.html", threads=list, topic_id=topic_id, topic_name=name)
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -16,10 +22,12 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-    if users.login(username, password):
-        return redirect("/")
-    else:
-        return render_template("error.html", message="Käyttäjätunnus tai salasana on väärin")
+        if users.login(username, password):
+            #print("printtausta jos löytyy")
+            return redirect("/")
+        else:
+            #print("printtaus jos ei löydy login")
+            return render_template("error.html", message="Käyttäjätunnus tai salasana on väärin")
 
 
 @app.route("/logout")
@@ -53,9 +61,9 @@ def register():
 
 
 
-@app.route("/message")
-def message():
-    return render_template("message.html")
+@app.route("/message/<int:id>")    # vai <text:topic> vai ota pois? ei ole vielä gitissä
+def message(id):     #lisätty topic 4.4, vai (topic)
+    return render_template("message.html", id=id)   # lisätty topic 4.4 vai topic=topic
 
 
 @app.route("/new_message", methods=["POST"])   # HUOM create message.html !!!!!!
