@@ -33,4 +33,4 @@ def get_threads(topic_id):  #7.4
 def get_topic_name(topic_id):   #7.4
     sql="SELECT topic FROM topics WHERE id=:topic_id"
     result =db.session.execute(sql, {"topic_id":topic_id})
-    return result.fetchone
+    return result.fetchone()[0]
