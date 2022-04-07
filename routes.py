@@ -8,7 +8,7 @@ def index():
     list=messages.get_list()
     return render_template("index.html", topics=list)    # add: no. of threads, no. of messages and time of last msg
 
-@app.route("topic/<int:topic_id>")  # 7.4
+@app.route("/topic/<int:topic_id>")  # 7.4
 def topic(topic_id):
     list=messages.get_threads(topic_id)
     name=messages.get_topic_name(topic_id)
