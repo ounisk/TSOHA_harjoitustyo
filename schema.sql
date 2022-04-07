@@ -11,6 +11,7 @@ CREATE TABLE topics (
 );
 CREATE TABLE threads (
     id SERIAL PRIMARY KEY,
+    thread TEXT
     topic_id INTEGER REFERENCES topics,
     user_id INTEGER REFERENCES allusers
 );
