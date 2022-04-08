@@ -43,7 +43,7 @@ def get_messages(thread_id): #8.4
 
 
 def get_path(topic_id, thread_id): #8.4
-    sql="SELECT topics.topic, thread.thread FROM topics, threads "\
+    sql="SELECT topics.topic, threads.thread FROM topics, threads "\
         "WHERE topics.id=:topic_id AND thread.id=:thread_id"     
     result=db.session.execute(sql, {"topic_id":topic_id, "thread_id":thread_id})
     return result.fetchone()      
