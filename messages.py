@@ -22,6 +22,7 @@ def get_list():
     result = db.session.execute(sql)
     return result.fetchall()
 
+
 def get_threads(topic_id):  #7.4
     print("haetaan threadit")
     user_id=users.user_id()  # additional: take into acc if admin or not???
@@ -30,6 +31,22 @@ def get_threads(topic_id):  #7.4
         "ORDER BY threads.id DESC"
     result=db.session.execute(sql, {"topic_id": topic_id, "user_id": user_id})  #admin?
     return result.fetchall()    
+
+
+def get_messages(thread_id): #8.4
+    sql="SELECT allusers.username, allmessages.sent_at, allmessages.content, allmessages.id "\
+        "FROM allusers, allmessages WHERE allmessages.thread_id=:thread_id "\
+        "AND allusers.id=allmessages.sender_id "\
+        "ORDER BY allmessages.id"  
+    result=db.session.execute(sql, {"thread_id": thread_id, "user_id": users.user_id()})   
+    return result.fetchall()       
+
+
+def get_path(topic_id, thread_id): #8.4
+    sql="SELECT topics.topic, thread.thread FROM topics, threads "\
+        "WHERE topics.id=:topic_id AND thread.id=:thread_id"     
+    result=db.session.execute(sql, {"topic_id":topic_id, "thread_id":thread_id})
+    return result.fetchone()      
 
     
 def get_topic_name(topic_id):   #7.4
