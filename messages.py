@@ -36,7 +36,7 @@ def get_threads(topic_id):  #7.4
 def get_messages(thread_id): #8.4
     sql="SELECT allusers.username, allmessages.sent_at, allmessages.content, allmessages.id "\
         "FROM allusers, allmessages WHERE allmessages.thread_id=:thread_id "\
-        "AND allusers.id=allmessages.sender_id "\
+        "AND allusers.id=allmessages.user_id "\
         "ORDER BY allmessages.id"  
     result=db.session.execute(sql, {"thread_id": thread_id, "user_id": users.user_id()})   
     return result.fetchall()       
