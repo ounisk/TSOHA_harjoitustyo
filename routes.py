@@ -10,6 +10,7 @@ def index():
 
 @app.route("/topic/<int:topic_id>")  # 7.4
 def topic(topic_id):
+    print("topic_id", topic_id)
     list=messages.get_threads(topic_id)
     name=messages.get_topic_name(topic_id)
     return render_template("topic.html", threads=list, topic_id=topic_id, topic_name=name)
