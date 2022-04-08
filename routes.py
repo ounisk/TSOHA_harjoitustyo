@@ -17,7 +17,7 @@ def topic(topic_id):
     return render_template("topic.html", threads=list, topic_id=topic_id, topic_name=name)
 
 
-@app.route("/topic/<int:topic_id>/thread/<int:thread:id>")
+@app.route("/topic/<int:topic_id>/thread/<int:thread_id>")
 def thread(topic_id,thread_id):
     list=messages.get_messages(thread_id)
     path=messages.get_path(topic_id, thread_id)
