@@ -17,11 +17,13 @@ def send(message, thread_id):  # thread_id and topic_id to be included w/message
 
 
 def get_list():
-    sql = "SELECT topics.topic FROM topics"
+    #sql = "SELECT topics.topic FROM topics"
+    sql="SELECT topics.id, topics.topic FROM topics ORDER BY topics.id DESC"   #add topics.id to get threads correctly
     result = db.session.execute(sql)
     return result.fetchall()
 
 def get_threads(topic_id):  #7.4
+    print("haetaan threadit")
     user_id=users.user_id()  # additional: take into acc if admin or not???
     sql="SELECT threads.id, threads.thread, allusers.username FROM threads, allusers"\
         "WHERE threads.topic_id=:topic_id AND allusers.id=threads.user_id"\
@@ -31,6 +33,7 @@ def get_threads(topic_id):  #7.4
 
     
 def get_topic_name(topic_id):   #7.4
+    print("haetaan topic name")
     sql="SELECT topic FROM topics WHERE id=:topic_id"
     result =db.session.execute(sql, {"topic_id":topic_id})
     return result.fetchone()[0]
