@@ -10,16 +10,19 @@ a {
 <h1>Tervetuloa Tsoha-kurssin keskustelupalstalle!</h1>
 <p>
 <hr>
-<h2>{{topic.topic}}</h2><br>
+<h2>{{path[0]}}-{{path[1]}}</h2><br>
 
 {%for message in allmessages%}
-<p {{message.content}}, {{message.user_id}, {{message.sent_at}} </p> <br>
+<p>{{message.user_id}, {{message.sent_at}} </p> <br>
+   <p> {{message.content}} </p> 
 {%endfor%}<br>
 <hr>
 <p>
 <p>
 
-<a href="/">Takaisin</a> <br>
+<a href="/topic/{{topic_id}}">Takaisin ketjuun</a><br>
+<p>
+<a href="/">Takaisin etusivulle</a> <br>
 
 Kirjaudu sisään:
 <p>
