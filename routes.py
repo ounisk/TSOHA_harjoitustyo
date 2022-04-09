@@ -97,9 +97,9 @@ def new_thread():
     return redirect("/topic/" + str(topic_id))
 
 
-@app.route("/message/<int:id>")    # vai <text:topic> vai ota pois? ei ole vielä gitissä
-def message(id):     #lisätty topic 4.4, vai (topic)
-    return render_template("message.html", id=id)   # lisätty topic 4.4 vai topic=topic
+@app.route("/message/<int:topic_id>/<int:thread_id>")   
+def message(topic_id, thread_id):     #korjattu 9.4,
+    return render_template("message.html", topic_id=topic_id, thread_id=thread_id)   # lisätty topic 4.4 vai topic=topic
 
 
 @app.route("/new_message", methods=["POST"])   # modified 9.4
@@ -110,14 +110,18 @@ def new_message():
     if session["csrf_token"] != request.form["csrf_token"]:    # to take into acc. CSRF-vulnerability
         abort(403)
 
-    message = request.form["message"]   #message.html
-    topic_id=request.form("topic_id")   #here?
-    thread_id=request.form("thread_id")    #here?
+    message = request.form["message"]   
+    topic_id=request.form["topic_id"]   
+    thread_id=request.form["thread_id"]    
 
     if len(message) > 5000:
         return render_template("error.html", message="Viesti on liian pitkä") #
 
+    if len(message) < 1:
+        return render_template("error.html", message="Viesti on liian lyhyt") #    
+   
     if messages.send(message, thread_id, user_id):
-        return redirect("/")   # or return redirect("/topic"+ topic_id)  ??
+        #return redirect("/")   # or return redirect("/topic"+ topic_id)  ??
+        return redirect("/topic/" + str(topic_id) + "/thread/" + str(thread_id))
     else:
         return render_template("error.html", message="Viestin lähetys ei onnistunut")
