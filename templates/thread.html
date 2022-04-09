@@ -11,11 +11,15 @@ a {
 <p>
 <hr>
 <h3>{{message_path[0]}} &middot; {{message_path[1]}}</h3><br>
-
+<hr>
 {%for message in messages%}
-<p> {{message.username}}, {{message.sent_at}} </p> <br>
+<p> <i>{{message.username}}, {{message.sent_at}}</i> </p>
    <p> {{message.content}} </p> 
 {%endfor%}<br>
+
+{% if session.user_id %}
+<a href="/message/{{topic_id}}/{{thread_id}}">Vastaa viestiin</a>
+{% endif %}
 <hr>
 <p>
 <p>
