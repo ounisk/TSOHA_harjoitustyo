@@ -2,7 +2,7 @@ from db import db
 from flask import session, request, abort
 import users
 
-def send(message, thread_id):  # thread_id and topic_id to be included w/message? 
+def send(message, thread_id, user_id):  # thread_id and topic_id to be included w/message? 
     user_id = users.user_id()
     if user_id == 0:
         return False
@@ -13,7 +13,13 @@ def send(message, thread_id):  # thread_id and topic_id to be included w/message
     sql = "INSERT INTO allmessages (content, thread_id, user_id, sent_at) VALUES (:content, :thread_id, :user_id, NOW())"
     db.session.execute(sql, {"content":message, "thread_id":thread_id, "user_id":user_id})
     db.session.commit()
-    return True    
+    return True   
+
+def new_thread(topic_id, user_id, thread): #9.4
+    sql="INSERT INTO threads (topic_id, user_id, thread) VALUES (:topic_id, :user_id, :thread) RETURNING id"
+    result=db.session.execute(sql, {"topic_id": topic_id, "user_id":user_id, "thread":thread})
+    db.session.commit()
+    return result.fetchone()
 
 
 def get_list():
