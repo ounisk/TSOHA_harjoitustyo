@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, redirect, request, session
+from flask import render_template, redirect, request, session, abort
 import users, messages
 
 
@@ -69,15 +69,47 @@ def register():
             return render_template("error.html", message="Rekisteröinti ei onnistunut, valitse toinen käyttäjätunnus")
 
 
+@app.route("/new_thread_template/<int:topic_id>")   #9.4
+def new(topic_id):
+    return render_template("new_thread_template.html", topic_id=topic_id)
+
+
+@app.route("/new_thread", methods=["POST"])   #9.4
+def new_thread():
+    user_id = users.user_id()
+
+    if session["csrf_token"] != request.form["csrf_token"]:    # to take into acc. CSRF-vulnerability
+        abort(403)
+
+    thread_name = request.form["thread_name"]   
+    first_message = request.form["message"] 
+    topic_id=request.form["topic_id"]
+
+    if len(thread_name) < 1 or len(thread_name) > 100:
+        return render_template("error.html", message="Keskustelun otsikon tulee olla 4-100 merkkiä")
+
+    if len(first_message) < 1 or len(first_message) > 5000:
+        return render_template("error.html", message="Viestin pituus pitää olla 1-5000 merkkiä")
+
+    thread_id = messages.new_thread(topic_id, user_id, thread_name)[0]
+    messages.send(first_message, thread_id, user_id)
+
+    return redirect("/topic/" + str(topic_id))
+
 
 @app.route("/message/<int:id>")    # vai <text:topic> vai ota pois? ei ole vielä gitissä
 def message(id):     #lisätty topic 4.4, vai (topic)
     return render_template("message.html", id=id)   # lisätty topic 4.4 vai topic=topic
 
 
-@app.route("/new_message", methods=["POST"])   # HUOM create message.html !!!!!!
+@app.route("/new_message", methods=["POST"])   # modified 9.4
 def new_message():
     #check if signed-in???
+    user_id = users.user_id()
+
+    if session["csrf_token"] != request.form["csrf_token"]:    # to take into acc. CSRF-vulnerability
+        abort(403)
+
     message = request.form["message"]   #message.html
     topic_id=request.form("topic_id")   #here?
     thread_id=request.form("thread_id")    #here?
@@ -85,7 +117,7 @@ def new_message():
     if len(message) > 5000:
         return render_template("error.html", message="Viesti on liian pitkä") #
 
-    if messages.send(message, thread_id):
+    if messages.send(message, thread_id, user_id):
         return redirect("/")   # or return redirect("/topic"+ topic_id)  ??
     else:
         return render_template("error.html", message="Viestin lähetys ei onnistunut")
