@@ -25,7 +25,7 @@ Kirjaudu sisään:
 <p>
 {% if session.user_id %}
 <p>Olet kirjautunut nimellä {{ session.username }}</p>
-<a href="/logout">Kirjaudu ulos</a> <br>
+<a href="/new_thread_template/{{topic_id}}">Luo uusi keskustelu</a> | <a href="/logout">Kirjaudu ulos</a> <br>
 {% else %}
 <a href="/login">Kirjaudu</a><br>
 {% endif %}
