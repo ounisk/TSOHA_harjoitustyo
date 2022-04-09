@@ -13,7 +13,7 @@ a {
 <h2>{{message_path[0]}}-{{message_path[1]}}</h2><br>
 
 {%for message in messages%}
-<p>{{message.user_id}}, {{message.sent_at}} </p> <br>
+<p> {{message.username}}, {{message.sent_at}} </p> <br>
    <p> {{message.content}} </p> 
 {%endfor%}<br>
 <hr>
