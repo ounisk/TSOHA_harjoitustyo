@@ -13,7 +13,14 @@ a {
 <h2>Aiheet:</h2><br>
 
 {%for topic in topics%}
-<a href="/topic/{{topic.id}}">{{topic.topic}}</a> <br>
+<a href="/topic/{{topic.id}}">{{topic.topic}}</a> -
+{% if topic[2]!=None %} 
+ketjuja: {{topic[2]}}, 
+viestejä: {{topic[3]}},
+viimeisin viesti: {{topic[4].strftime("%Y-%m-%d %H:%M:%S")}}<br>
+{% else %}
+ketjuja: 0
+{% endif %}
 {%endfor%}<br>
 <hr>
 <p>
