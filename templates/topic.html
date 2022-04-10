@@ -13,7 +13,7 @@ a {
 <h2>{{topic_name}}</h2><br>
 <hr>
 {%for thread in threads%}
-<a href="/topic/{{topic_id}}/thread/{{thread.id}}">{{thread.thread}} </a> <br>
+<a href="/topic/{{topic_id}}/thread/{{thread.id}}">{{thread.thread}}</a> - viestejä: {{thread[3]}} <br>
 {%endfor%}<br>
 <hr>
 <p>
