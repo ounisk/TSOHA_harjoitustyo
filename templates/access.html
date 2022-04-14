@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<form action="/grant_topic_access" method="POST">
+<p>Käyttäjätunnus:</p>
+<input type="text" name="username" minlength="1" maxlength="50"> <br>
+<input type="submit" value="Anna oikeudet alueelle">
+<input type="hidden" name="topic_id" value="{{topic_id}}">
+<input type="hidden" name="csrf_token" value="{{session.csrf_token}}">
+</form>
