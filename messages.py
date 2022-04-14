@@ -16,11 +16,16 @@ def send(message, thread_id, user_id):  # thread_id and topic_id to be included 
     return True   
 
 def new_thread(topic_id, user_id, thread): #9.4
-    sql="INSERT INTO threads (topic_id, user_id, thread) VALUES (:topic_id, :user_id, :thread) RETURNING id"
-    result=db.session.execute(sql, {"topic_id": topic_id, "user_id":user_id, "thread":thread})
+    sql = "INSERT INTO threads (topic_id, user_id, thread) VALUES (:topic_id, :user_id, :thread) RETURNING id"
+    result = db.session.execute(sql, {"topic_id": topic_id, "user_id":user_id, "thread":thread})
     db.session.commit()
     return result.fetchone()
 
+def new_topic(topic, visible):    #11.4
+    sql = "INSERT INTO topics (topic, visible) VALUES (:topic, :visible)"
+    db.session.execute(sql, {"topic":topic, "visible":visible})
+    db.session.commit()
+    return True
 
 def get_list():
     #sql = "SELECT topics.topic FROM topics"
@@ -33,9 +38,16 @@ def get_list():
     #    "LEFT JOIN threads ON threads.topic_id=topics.id "\
     #    "LEFT JOIN allmessages ON allmessages.thread_id=threads.id "\
     #    "GROUP BY topics.id, topics.topic "\
-    #    "ORDER BY topics.id"  
-    sql="SELECT topics.id, topics.topic, Totalcounter.Threadcounter, "\
-        "Totalcounter.Messagescounter, Totalcounter.Time "\
+    #    "ORDER BY topics.id" 
+    
+    user_id = users.user_id()   #14.4
+    
+    is_admin = users.is_admin()   # 14.4 
+    if is_admin == 0:             # if no-one has signed in yet is_admin is 0, has to have Boolean value
+        is_admin = False
+    #print("user_id ja is_admin", user_id,  is_admin)
+    sql = "SELECT topics.id, topics.topic, Totalcounter.Threadcounter, "\
+        "Totalcounter.Messagescounter, Totalcounter.Time, topics.visible "\
         "FROM topics "\
         "LEFT JOIN (SELECT threads.topic_id, COUNT(threads.id) Threadcounter, "\
         "SUM(Threadmessages.Messagecounter) Messagescounter, MAX(Threadmessages.time) Time FROM threads "\
@@ -43,42 +55,44 @@ def get_list():
         "FROM allmessages "\
         "GROUP BY allmessages.thread_id) Threadmessages ON Threadmessages.thread_id=threads.id "\
         "GROUP BY threads.topic_id) Totalcounter ON Totalcounter.topic_id=topics.id "\
+        "WHERE topics.visible=TRUE OR :is_admin OR :user_id IN "\
+        "(SELECT topics_private.user_id FROM topics_private WHERE topics_private.topic_id=topics.id) "\
         "ORDER BY topics.id"                             
-    result = db.session.execute(sql)
+    result = db.session.execute(sql, {"is_admin":is_admin, "user_id":user_id})
     return result.fetchall()
 
 
 def get_threads(topic_id):  #7.4
-    user_id=users.user_id()  # additional: take into acc if admin or not???
+    user_id = users.user_id()  # additional: take into acc if admin or not???
     #sql="SELECT threads.id, threads.thread, allusers.username FROM threads, allusers "\
     #    "WHERE threads.topic_id=:topic_id AND allusers.id=threads.user_id "\
     #    "ORDER BY threads.id DESC"
-    sql="SELECT threads.id, threads.thread, allusers.username, (SELECT COUNT(allmessages.id) "\
+    sql = "SELECT threads.id, threads.thread, allusers.username, (SELECT COUNT(allmessages.id) "\
         "FROM allmessages WHERE threads.id=allmessages.thread_id) FROM threads, allusers "\
         "WHERE threads.topic_id=:topic_id AND allusers.id=threads.user_id "\
         "ORDER BY threads.id DESC"
-    result=db.session.execute(sql, {"topic_id": topic_id, "user_id": user_id})  #admin?
+    result = db.session.execute(sql, {"topic_id": topic_id, "user_id": user_id})  #admin?
     return result.fetchall()    
 
 
 def get_messages(thread_id): #8.4
-    sql="SELECT allusers.username, allmessages.sent_at, allmessages.content, allmessages.id "\
+    sql = "SELECT allusers.username, allmessages.sent_at, allmessages.content, allmessages.id "\
         "FROM allusers, allmessages WHERE allmessages.thread_id=:thread_id "\
         "AND allusers.id=allmessages.user_id "\
         "ORDER BY allmessages.id"  
-    result=db.session.execute(sql, {"thread_id": thread_id, "user_id": users.user_id()})   
+    result = db.session.execute(sql, {"thread_id": thread_id, "user_id": users.user_id()})   
     return result.fetchall()       
 
 
 def get_path(topic_id, thread_id): #8.4
-    sql="SELECT topics.topic, threads.thread FROM topics, threads "\
+    sql = "SELECT topics.topic, threads.thread FROM topics, threads "\
         "WHERE topics.id=:topic_id AND threads.id=:thread_id"     
-    result=db.session.execute(sql, {"topic_id":topic_id, "thread_id":thread_id})
+    result = db.session.execute(sql, {"topic_id":topic_id, "thread_id":thread_id})
     return result.fetchone()      
 
     
 def get_topic_name(topic_id):   #7.4
     #print("haetaan topic name")
-    sql="SELECT topic FROM topics WHERE id=:topic_id"
-    result =db.session.execute(sql, {"topic_id":topic_id})
+    sql = "SELECT topic FROM topics WHERE id=:topic_id"
+    result = db.session.execute(sql, {"topic_id":topic_id})
     return result.fetchone()[0]
