@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<form action="/new_topic" method="POST">
+Aihe:<br> <input type="text" name="topic_name"> <br>
+<p>Onko aihe salainen?:</p> <br>
+<input type="checkbox" name="visible" value=False unchecked > Kyllä
+<input type="checkbox" name="visible" value=True unchecked > Ei <br>
+<input type="submit" value="Luo aihe">
+<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+</form>
