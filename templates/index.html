@@ -14,14 +14,40 @@ a {
 
 {%for topic in topics%}
 <a href="/topic/{{topic.id}}">{{topic.topic}}</a> -
-{% if topic[2]!=None %} 
-ketjuja: {{topic[2]}}, 
-viestejä: {{topic[3]}},
-viimeisin viesti: {{topic[4].strftime("%Y-%m-%d %H:%M:%S")}}<br>
-{% else %}
-ketjuja: 0
-{% endif %}
-{%endfor%}<br>
+    {% if topic[5]==True %} 
+        {% if topic[2]!=None %}
+            ketjuja: {{topic[2]}}, 
+            viestejä: {{topic[3]}},
+            viimeisin viesti: {{topic[4].strftime("%Y-%m-%d %H:%M:%S")}}<br>
+        {% else %}
+            ketjuja: 0 <br>
+        {% endif %}
+
+    {%else%}
+            
+    SALAINEN -
+        {% if topic[2]!=None %}
+            ketjuja: {{topic[2]}}, 
+            viestejä: {{topic[3]}},
+            viimeisin viesti: {{topic[4].strftime("%Y-%m-%d %H:%M:%S")}}  
+            {% if session.admin==True %}
+            {% if topic[5]==False %} 
+            <a href="/access/{{topic.id}}">Anna oikeus </a>
+            {% endif %}     
+            {% endif %}<br>
+        {% else %}
+            ketjuja: 0  
+            {% if session.admin==True %}
+            {% if topic[5]==False %} 
+            <a href="/access/{{topic.id}}">Anna oikeus </a>
+            {% endif %}     
+            {% endif %}<br>
+    
+              
+        {% endif %}  
+    {%endif%}
+
+{% endfor %}<br>
 <hr>
 <p>
 <p>
@@ -33,4 +59,10 @@ Kirjaudu sisään:
 {% else %}
 <a href="/login">Kirjaudu</a><br>
 {% endif %}
+
+<p>
+{% if session.admin==True %}
+Olet palstan ylläpitäjä. <a href="create_new_topic" >Tässä</a> voit luoda uuden aiheen. 
+{% endif %}
+</p>
 <p>
