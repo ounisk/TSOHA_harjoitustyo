@@ -1,3 +1,4 @@
+from sqlalchemy import true
 from app import app
 from flask import render_template, redirect, request, session, abort
 import users, messages
@@ -5,22 +6,21 @@ import users, messages
 
 @app.route("/")
 def index():
-    list=messages.get_list()
+    list = messages.get_list()
     return render_template("index.html", topics=list)    # add: no. of threads, no. of messages and time of last msg
 
 
 @app.route("/topic/<int:topic_id>")  # 7.4
 def topic(topic_id):
-    print("topic_id", topic_id)
-    list=messages.get_threads(topic_id)
-    name=messages.get_topic_name(topic_id)
+    list = messages.get_threads(topic_id)
+    name = messages.get_topic_name(topic_id)
     return render_template("topic.html", threads=list, topic_id=topic_id, topic_name=name)
 
 
 @app.route("/topic/<int:topic_id>/thread/<int:thread_id>")
-def thread(topic_id,thread_id):
-    list=messages.get_messages(thread_id)
-    path=messages.get_path(topic_id, thread_id)
+def thread(topic_id, thread_id):
+    list = messages.get_messages(thread_id)
+    path = messages.get_path(topic_id, thread_id)
     return render_template("thread.html", messages=list, topic_id=topic_id, thread_id=thread_id, message_path=path)
 
 
@@ -42,7 +42,7 @@ def login():
 @app.route("/logout")
 def logout():
     users.logout()
-    return redirect("/")   
+    return redirect("/")
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -52,14 +52,14 @@ def register():
     if request.method == "POST":
         username = request.form["username"]
 
-        if len(username)<1:
+        if len(username) < 1:
             return render_template("error.html", message="Käyttäjätunnus liian lyhyt")
-        if len(username)>50:
+        if len(username) > 50:
             return render_template("error.html", message="Käyttäjätunnus liian pitkä")    
         password1 = request.form["password1"]
         password2 = request.form["password2"]
 
-        if len(password1)<1:
+        if len(password1) < 1:
             return render_template("error.html", message="Salasana liian lyhyt")
         if password1 != password2:
             return render_template("error.html", message="Salasana ei täsmää")
@@ -67,6 +67,61 @@ def register():
             return redirect("/")
         else:
             return render_template("error.html", message="Rekisteröinti ei onnistunut, valitse toinen käyttäjätunnus")
+
+
+
+@app.route("/create_new_topic") #11.4, 
+def create_new_topic():
+    return render_template("new_topic_template.html")
+
+@app.route("/new_topic", methods=["POST"])   #11.4, 12.4
+def new_topic():
+
+    if not session.get("admin", 0):   #if not admin, can't create new topics
+        abort(403)
+
+    if session["csrf_token"] != request.form["csrf_token"]:    # to take into acc. CSRF-vulnerability
+        abort(403)
+
+    topic_name = request.form["topic_name"]
+    visible = request.form.get("visible")
+    #print("visibility", visibility)
+
+    if len(topic_name) < 1 or len(topic_name) > 100:
+        return render_template("error.html", message="Aiheen tulee olla 1-100 merkkiä")
+
+    #print("mitä on visiblessa?", visible)
+    messages.new_topic(topic_name, visible)
+    return redirect("/")
+
+
+@app.route("/access/<int:topic_id>")    #13.4
+def access(topic_id):
+    return render_template("access.html", topic_id=topic_id)
+
+
+@app.route("/grant_topic_access", methods=["POST"])    #13.4
+def grant_topic_access():
+    if not session.get("admin", 0):   #if not admin, can't give access
+        abort(403)
+
+    if session["csrf_token"] != request.form["csrf_token"]:    # to take into acc. CSRF-vulnerability
+        abort(403)
+
+    topic_id = request.form["topic_id"]
+    #print("topic_id", topic_id)
+    username=request.form["username"]
+
+    if len(username) < 1 or len(username) > 50:
+            return render_template("error.html", message="Käyttäjätunnuksen pituus on 1-50 merkkiä")
+       
+    user_id = users.get_user_id(username)
+
+    if not user_id:
+        return render_template("error.html", message=str(username) + " ei ole tietokannassa")
+
+    users.grant_access(topic_id, user_id)
+    return redirect("/")
 
 
 @app.route("/new_thread_template/<int:topic_id>")   #9.4
@@ -83,10 +138,10 @@ def new_thread():
 
     thread_name = request.form["thread_name"]   
     first_message = request.form["message"] 
-    topic_id=request.form["topic_id"]
+    topic_id = request.form["topic_id"]
 
     if len(thread_name) < 1 or len(thread_name) > 100:
-        return render_template("error.html", message="Keskustelun otsikon tulee olla 4-100 merkkiä")
+        return render_template("error.html", message="Keskustelun otsikon tulee olla 1-100 merkkiä")
 
     if len(first_message) < 1 or len(first_message) > 5000:
         return render_template("error.html", message="Viestin pituus pitää olla 1-5000 merkkiä")
@@ -98,8 +153,8 @@ def new_thread():
 
 
 @app.route("/message/<int:topic_id>/<int:thread_id>")   
-def message(topic_id, thread_id):     #korjattu 9.4,
-    return render_template("message.html", topic_id=topic_id, thread_id=thread_id)   # lisätty topic 4.4 vai topic=topic
+def message(topic_id, thread_id):     #fixed 9.4,
+    return render_template("message.html", topic_id=topic_id, thread_id=thread_id)   #  add topic 4.4 
 
 
 @app.route("/new_message", methods=["POST"])   # modified 9.4
@@ -111,8 +166,8 @@ def new_message():
         abort(403)
 
     message = request.form["message"]   
-    topic_id=request.form["topic_id"]   
-    thread_id=request.form["thread_id"]    
+    topic_id = request.form["topic_id"]   
+    thread_id = request.form["thread_id"]    
 
     if len(message) > 5000:
         return render_template("error.html", message="Viesti on liian pitkä") #
