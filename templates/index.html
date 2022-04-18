@@ -51,13 +51,17 @@ a {
 <hr>
 <p>
 <p>
-Kirjaudu sisään:
+
 <p>
 {% if session.user_id %}
 <p>Olet kirjautunut nimellä {{ session.username }}</p>
-<a href="/logout">Kirjaudu ulos</a> <br>
+<a href="/search">Hae viestejä</a> | <a href="/logout">Kirjaudu ulos</a> <br>
 {% else %}
+<p>
+Kirjaudu sisään:
+<p>
 <a href="/login">Kirjaudu</a><br>
+
 {% endif %}
 
 <p>
