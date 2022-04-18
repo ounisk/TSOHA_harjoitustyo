@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+
+<style>
+a {
+    color:hotpink;
+    text-decoration: none;
+}
+</style>
+
+<p>Hakutulos:</p>
+{% for message in messages %}
+<a href="topic/{{message[0]}}/thread/{{message[2]}}#{{message[4]}}">{{message[1]}}/{{message[3]}}</a>
+<p>{{ message[5] }}</p> 
+<p>{{ message[6].strftime("%Y-%m-%d %H:%M:%S") }}</p>
+
+{%endfor%}
+
+<a href="/">Takaisin etusivulle</a> <br>
