@@ -57,7 +57,7 @@ def get_list():
         "GROUP BY threads.topic_id) Totalcounter ON Totalcounter.topic_id=topics.id "\
         "WHERE topics.visible=TRUE OR :is_admin OR :user_id IN "\
         "(SELECT topics_private.user_id FROM topics_private WHERE topics_private.topic_id=topics.id) "\
-        "ORDER BY topics.id"                             
+        "ORDER BY topics.visible DESC, topics.id"                             
     result = db.session.execute(sql, {"is_admin":is_admin, "user_id":user_id})
     return result.fetchall()
 
@@ -96,3 +96,41 @@ def get_topic_name(topic_id):   #7.4
     sql = "SELECT topic FROM topics WHERE id=:topic_id"
     result = db.session.execute(sql, {"topic_id":topic_id})
     return result.fetchone()[0]
+
+
+def search_message(query):   #16.4, check order
+    user_id = users.user_id()   #14.4
+    is_admin = users.is_admin()
+    #sql = "SELECT DISTINCT topics.id, topics.topic, threads.id, threads.thread, "\
+    #    "allmessages.id, allmessages.content, allmessages.sent_at "\
+    #    "FROM topics, topics_private, threads, allmessages "\
+    #    "WHERE LOWER(allmessages.content) LIKE :query AND allmessages.thread_id=threads.id "\
+    #    "AND threads.topic_id=topics.id AND (topics.visible=TRUE OR :is_admin OR "\
+    #    ":user_id IN (SELECT topics_private.user_id FROM topics_private "\
+    #    "WHERE topics_private.topic_id=topics.id)) "\
+    #    "ORDER BY allmessages.sent_at"
+    #result = db.session.execute(sql, {"query":"%"+query.lower()+"%", "user_id":user_id,
+    #        "is_admin":is_admin}) 
+
+    sql = " SELECT * FROM (SELECT topics.id, topics.topic, threads.id, threads.thread, allmessages.id, "\
+        "allmessages.content, allmessages.sent_at "\
+        "FROM allmessages JOIN threads ON allmessages.thread_id=threads.id  "\
+        "JOIN topics ON threads.topic_id=topics.id "\
+        "WHERE (topics.visible=TRUE OR :is_admin OR "\
+        ":user_id IN (SELECT topics_private.user_id FROM topics_private "\
+        "WHERE topics_private.topic_id=topics.id)) "\
+        "ORDER BY allmessages.sent_at) results "\
+        "WHERE LOWER(results.content) LIKE :query"  
+
+    #sql = "SELECT topics.id, topics.topic, threads.id, threads.thread "\  
+    #"FROM (SELECT allmessages.id, allmessages.content, allmessages.sent_at "\
+    #"FROM allmessages WHERE LOWER(allmessages.content) LIKE :query) "\ #requires [AS] foo
+    #"JOIN threads ON allmessages.thread_id=threads.id  "\
+    #"JOIN topics ON threads.topic_id=topics.id "\
+    #"WHERE (topics.visible=TRUE OR :is_admin OR :user_id IN (SELECT topics_private.user_id "\
+    #"FROM topics_private WHERE topics_private.topic_id=topics.id)) "\
+    #"ORDER BY allmessages.sent_at"
+    result = db.session.execute(sql, {"query":"%"+query.lower()+"%", "user_id":user_id,
+            "is_admin":is_admin})     
+    return result.fetchall()
+    
