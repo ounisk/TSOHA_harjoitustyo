@@ -21,12 +21,15 @@ a {
 
 <a href="/">Takaisin etusivulle</a> <br>
 
-Kirjaudu sisään:
+
 <p>
 {% if session.user_id %}
 <p>Olet kirjautunut nimellä {{ session.username }}</p>
 <a href="/new_thread_template/{{topic_id}}">Luo uusi keskustelu</a> | <a href="/logout">Kirjaudu ulos</a> <br>
 {% else %}
+<p>
+Kirjaudu sisään:
+<p>
 <a href="/login">Kirjaudu</a><br>
 {% endif %}
 <p>
