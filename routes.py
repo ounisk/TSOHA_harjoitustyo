@@ -170,13 +170,31 @@ def new_message():
     thread_id = request.form["thread_id"]    
 
     if len(message) > 5000:
-        return render_template("error.html", message="Viesti on liian pitkä") #
+        return render_template("error.html", message="Viesti on liian pitkä.") #
 
     if len(message) < 1:
-        return render_template("error.html", message="Viesti on liian lyhyt") #    
+        return render_template("error.html", message="Viesti on liian lyhyt.") #    
    
     if messages.send(message, thread_id, user_id):
         #return redirect("/")   # or return redirect("/topic"+ topic_id)  ??
         return redirect("/topic/" + str(topic_id) + "/thread/" + str(thread_id))
     else:
-        return render_template("error.html", message="Viestin lähetys ei onnistunut")
+        return render_template("error.html", message="Viestin lähetys ei onnistunut.")
+
+
+
+@app.route("/search")    #16.4
+def search():
+    return render_template("search.html")
+
+@app.route("/search_result", methods=["GET"])    #16.4
+def search_result():
+    query = request.args["query"]
+    if len(query) < 1 or len(query) > 50:
+        return render_template("error.html", message = "Haettavan sanan pituus voi olla 1-50 merkkiä.")
+    result_messages = messages.search_message(query)
+    print("result_messages", result_messages)
+    if result_messages is None or len(result_messages) == 0:
+        return render_template("error.html", message = "Hakusanalla ei löydy viestejä.")
+
+    return render_template("search_result.html", messages = result_messages)
