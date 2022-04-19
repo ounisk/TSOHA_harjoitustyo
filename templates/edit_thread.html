@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<form action="/edit_thread_header" method="POST">
+Otsikko:<br> <input type="text" name="thread_name"> <br>
+<input type="submit" value="Tallenna muutos">
+<input type="hidden" name="topic_id" value="{{ topic_id }}">
+<input type="hidden" name="thread_id" value="{{ thread_id }}">
+<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+</form>
