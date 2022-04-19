@@ -15,17 +15,48 @@ def send(message, thread_id, user_id):  # thread_id and topic_id to be included 
     db.session.commit()
     return True   
 
+def edit_message(content, message_id): #19.4
+    sql = "UPDATE allmessages SET content=:content WHERE id=:message_id"      
+    db.session.execute(sql, {"content":content, "message_id":message_id})
+    db.session.commit()
+
+
+def delete_this_message(message_id):   #19.4
+    sql = "DELETE FROM allmessages WHERE id=:message_id RETURNING thread_id"
+    result = db.session.execute(sql, {"message_id":message_id})
+    db.session.commit()
+    return result.fetchone()
+
+
+
 def new_thread(topic_id, user_id, thread): #9.4
     sql = "INSERT INTO threads (topic_id, user_id, thread) VALUES (:topic_id, :user_id, :thread) RETURNING id"
     result = db.session.execute(sql, {"topic_id": topic_id, "user_id":user_id, "thread":thread})
     db.session.commit()
     return result.fetchone()
 
+
+def edit_thread(thread_id, thread): #18.4
+    sql = "UPDATE threads SET thread=:thread WHERE id=:thread_id"
+    db.session.execute(sql, {"thread":thread, "thread_id": thread_id})
+    db.session.commit()
+
+
+def delete_this_thread(thread_id):   #18.4
+    #print("toimiiko deletointi")
+    sql = "DELETE FROM threads WHERE id=:thread_id RETURNING topic_id"
+    result = db.session.execute(sql, {"thread_id": thread_id})
+    db.session.commit()
+    return result.fetchone()
+
+
+
 def new_topic(topic, visible):    #11.4
     sql = "INSERT INTO topics (topic, visible) VALUES (:topic, :visible)"
     db.session.execute(sql, {"topic":topic, "visible":visible})
     db.session.commit()
     return True
+
 
 def get_list():
     #sql = "SELECT topics.topic FROM topics"
@@ -41,7 +72,7 @@ def get_list():
     #    "ORDER BY topics.id" 
     
     user_id = users.user_id()   #14.4
-    
+
     is_admin = users.is_admin()   # 14.4 
     if is_admin == 0:             # if no-one has signed in yet is_admin is 0, has to have Boolean value
         is_admin = False
@@ -62,25 +93,34 @@ def get_list():
     return result.fetchall()
 
 
-def get_threads(topic_id):  #7.4
+def get_threads(topic_id):  #7.4 , 18.4 (add filter for edit&delete rights)
     user_id = users.user_id()  # additional: take into acc if admin or not???
+    is_admin = users.is_admin()   
+    if is_admin == 0:             # if no-one has signed in yet is_admin is 0, has to have Boolean value
+        is_admin = False
     #sql="SELECT threads.id, threads.thread, allusers.username FROM threads, allusers "\
     #    "WHERE threads.topic_id=:topic_id AND allusers.id=threads.user_id "\
     #    "ORDER BY threads.id DESC"
     sql = "SELECT threads.id, threads.thread, allusers.username, (SELECT COUNT(allmessages.id) "\
-        "FROM allmessages WHERE threads.id=allmessages.thread_id) FROM threads, allusers "\
+        "FROM allmessages WHERE threads.id=allmessages.thread_id), (threads.user_id=:user_id OR :is_admin=TRUE) "\
+        "FROM threads, allusers "\
         "WHERE threads.topic_id=:topic_id AND allusers.id=threads.user_id "\
         "ORDER BY threads.id DESC"
-    result = db.session.execute(sql, {"topic_id": topic_id, "user_id": user_id})  #admin?
+    result = db.session.execute(sql, {"topic_id": topic_id, "user_id": user_id, "is_admin":is_admin})  #admin?
     return result.fetchall()    
 
 
-def get_messages(thread_id): #8.4
-    sql = "SELECT allusers.username, allmessages.sent_at, allmessages.content, allmessages.id "\
+def get_messages(thread_id): #8.4, 18.4, 19.4
+    user_id = users.user_id() 
+    is_admin = users.is_admin() #OR :is_admin)
+    if is_admin == 0:             # if no-one has signed in yet is_admin is 0, has to have Boolean value
+        is_admin = False
+    sql = "SELECT allusers.username, allmessages.sent_at, allmessages.content, allmessages.id, "\
+        "(allmessages.user_id=:user_id OR :is_admin=TRUE) "\
         "FROM allusers, allmessages WHERE allmessages.thread_id=:thread_id "\
         "AND allusers.id=allmessages.user_id "\
         "ORDER BY allmessages.id"  
-    result = db.session.execute(sql, {"thread_id": thread_id, "user_id": users.user_id()})   
+    result = db.session.execute(sql, {"thread_id": thread_id, "user_id": users.user_id(), "is_admin":is_admin})   
     return result.fetchall()       
 
 
