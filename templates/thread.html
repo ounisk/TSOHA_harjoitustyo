@@ -15,6 +15,9 @@ a {
 {%for message in messages%}
 <p> <i>{{message.username}}, {{message.sent_at.strftime("%Y-%m-%d %H:%M:%S")}}</i> </p>
    <p> {{message.content}} </p> 
+   {% if message[4] %}
+   <a href="/edit_message/{{topic_id}}/{{thread_id}}/{{message.id}}">Muokkaa viestiä </a> | <a href="/delete_message/{{topic_id}}/{{thread_id}}/{{message.id}}">Poista viesti</a>
+   {%endif%}<br>   
 {%endfor%}<br>
 
 {% if session.user_id %}
@@ -27,13 +30,15 @@ a {
 <a href="/topic/{{topic_id}}">Takaisin ketjuun</a><br>
 <p>
 <a href="/">Takaisin etusivulle</a> <br>
-<p>
-Kirjaudu sisään:
+
 <p>
 {% if session.user_id %}
 <p>Olet kirjautunut nimellä {{ session.username }}</p>
 <a href="/logout">Kirjaudu ulos</a> <br>
 {% else %}
+<p>
+Kirjaudu sisään:
+<p>
 <a href="/login">Kirjaudu</a><br>
 {% endif %}
 <p>
