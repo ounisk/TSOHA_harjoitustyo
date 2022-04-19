@@ -13,7 +13,10 @@ a {
 <h2>{{topic_name}}</h2><br>
 <hr>
 {%for thread in threads%}
-<a href="/topic/{{topic_id}}/thread/{{thread.id}}">{{thread.thread}}</a> - viestejä: {{thread[3]}} <br>
+<a href="/topic/{{topic_id}}/thread/{{thread.id}}">{{thread.thread}}</a> - viestejä: {{thread[3]}} 
+{% if thread[4] %}
+<a href="/edit_thread/{{topic_id}}/{{thread.id}}">Muokkaa otsikkoa </a> | <a href="/delete_thread/{{thread.id}}">Poista ketju</a>
+{%endif%}<br>
 {%endfor%}<br>
 <hr>
 <p>
