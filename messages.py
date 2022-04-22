@@ -15,6 +15,14 @@ def send(message, thread_id, user_id):  # thread_id and topic_id to be included 
     db.session.commit()
     return True   
 
+
+def get_message_to_edit(message_id):  # 21.4.2022
+    sql = "SELECT allmessages.content FROM allmessages WHERE id=:message_id"
+    result = db.session.execute(sql, {"message_id":message_id})
+    db.session.commit()
+    return result.fetchone()[0]
+
+
 def edit_message(content, message_id): #19.4
     sql = "UPDATE allmessages SET content=:content WHERE id=:message_id"      
     db.session.execute(sql, {"content":content, "message_id":message_id})
@@ -34,6 +42,13 @@ def new_thread(topic_id, user_id, thread): #9.4
     result = db.session.execute(sql, {"topic_id": topic_id, "user_id":user_id, "thread":thread})
     db.session.commit()
     return result.fetchone()
+
+
+def get_thread_to_edit(thread_id): #21.4
+    sql = "SELECT threads.thread FROM threads WHERE id=:thread_id"
+    result = db.session.execute(sql, {"thread_id":thread_id})
+    db.session.commit()
+    return result.fetchone()[0]
 
 
 def edit_thread(thread_id, thread): #18.4
@@ -56,6 +71,20 @@ def new_topic(topic, visible):    #11.4
     db.session.execute(sql, {"topic":topic, "visible":visible})
     db.session.commit()
     return True
+
+
+def hide_topic(topic_id):   #20.4
+    sql = "UPDATE topics SET visible=FALSE, topic='**PIILOTETTU** ' || topic WHERE id=:topic_id"
+    db.session.execute(sql, {"topic_id":topic_id})
+    db.session.commit()
+
+
+def hide_secret_topic(topic_id):  #20.4
+    sql = "DELETE FROM topics_private WHERE topic_id=:topic_id"
+    sql2 = "UPDATE topics SET topic='**PIILOTETTU** ' || topic WHERE id=:topic_id"
+    db.session.execute(sql, {"topic_id":topic_id})
+    db.session.execute(sql2, {"topic_id":topic_id})
+    db.session.commit()
 
 
 def get_list():
