@@ -18,13 +18,19 @@ a {
         {% if topic[2]!=None %}
             ketjuja: {{topic[2]}}, 
             viestejä: {{topic[3]}},
-            viimeisin viesti: {{topic[4].strftime("%Y-%m-%d %H:%M:%S")}}<br>
+            viimeisin viesti: {{topic[4].strftime("%Y-%m-%d %H:%M:%S")}}
+            {% if session.admin==True %}
+            <a href="/hide_topic/{{topic.id}}">Piilota kaikilta</a>
+            {% endif %} <br>
         {% else %}
-            ketjuja: 0 <br>
+            ketjuja: 0
+            {% if session.admin==True %}
+            <a href="/hide_topic/{{topic.id}}">Piilota kaikilta</a>
+            {% endif %}<br>
         {% endif %}
 
     {%else%}
-            
+    
     SALAINEN -
         {% if topic[2]!=None %}
             ketjuja: {{topic[2]}}, 
@@ -32,20 +38,19 @@ a {
             viimeisin viesti: {{topic[4].strftime("%Y-%m-%d %H:%M:%S")}}  
             {% if session.admin==True %}
             {% if topic[5]==False %} 
-            <a href="/access/{{topic.id}}">Anna oikeus </a>
+            <a href="/access/{{topic.id}}">Anna oikeus </a> | <a href="/hide_secret_topic/{{topic.id}}">Piilota kaikilta</a>
             {% endif %}     
             {% endif %}<br>
         {% else %}
             ketjuja: 0  
             {% if session.admin==True %}
             {% if topic[5]==False %} 
-            <a href="/access/{{topic.id}}">Anna oikeus </a>
+            <a href="/access/{{topic.id}}">Anna oikeus </a> | <a href="/hide_secret_topic/{{topic.id}}">Piilota kaikilta</a>
             {% endif %}     
             {% endif %}<br>
-    
-              
-        {% endif %}  
-    {%endif%}
+                
+            {% endif %}     
+    {%endif%}     
 
 {% endfor %}<br>
 <hr>
