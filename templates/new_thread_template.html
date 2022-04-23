@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <form action="/new_thread" method="POST">
 Otsikko:<br> <input type="text" name="thread_name"> <br>
-Ensimmäinen viesti:<br> <textarea name="message"></textarea><br>
+Ensimmäinen viesti:<br> <textarea name="message" rows="5" cols="40"></textarea><br>
 <input type="submit" value="Luo keskustelu">
 <input type="hidden" name="topic_id" value="{{ topic_id }}">
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
