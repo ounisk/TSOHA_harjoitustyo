@@ -1,19 +1,20 @@
-from db import db
 from flask import session, request, abort
+from db import db
 import users
 
-def send(message, thread_id, user_id):  # thread_id and topic_id to be included w/message? 
+def send(message, thread_id, user_id):
     user_id = users.user_id()
     if user_id == 0:
         return False
 
-    if session["csrf_token"] != request.form["csrf_token"]:    # to take into acc. CSRF-vulnerability
+    if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)
 
-    sql = "INSERT INTO allmessages (content, thread_id, user_id, sent_at) VALUES (:content, :thread_id, :user_id, NOW())"
+    sql = "INSERT INTO allmessages (content, thread_id, user_id, sent_at) "\
+        "VALUES (:content, :thread_id, :user_id, NOW())"
     db.session.execute(sql, {"content":message, "thread_id":thread_id, "user_id":user_id})
     db.session.commit()
-    return True   
+    return True
 
 
 def get_message_to_edit(message_id):  # 21.4.2022
@@ -24,7 +25,7 @@ def get_message_to_edit(message_id):  # 21.4.2022
 
 
 def edit_message(content, message_id): #19.4
-    sql = "UPDATE allmessages SET content=:content WHERE id=:message_id"      
+    sql = "UPDATE allmessages SET content=:content WHERE id=:message_id"
     db.session.execute(sql, {"content":content, "message_id":message_id})
     db.session.commit()
 
@@ -36,9 +37,9 @@ def delete_this_message(message_id):   #19.4
     return result.fetchone()
 
 
-
 def new_thread(topic_id, user_id, thread): #9.4
-    sql = "INSERT INTO threads (topic_id, user_id, thread) VALUES (:topic_id, :user_id, :thread) RETURNING id"
+    sql = "INSERT INTO threads (topic_id, user_id, thread) VALUES "\
+        "(:topic_id, :user_id, :thread) RETURNING id"
     result = db.session.execute(sql, {"topic_id": topic_id, "user_id":user_id, "thread":thread})
     db.session.commit()
     return result.fetchone()
@@ -98,14 +99,13 @@ def get_list():
     #    "LEFT JOIN threads ON threads.topic_id=topics.id "\
     #    "LEFT JOIN allmessages ON allmessages.thread_id=threads.id "\
     #    "GROUP BY topics.id, topics.topic "\
-    #    "ORDER BY topics.id" 
-    
+    #    "ORDER BY topics.id"
+
     user_id = users.user_id()   #14.4
 
-    is_admin = users.is_admin()   # 14.4 
-    if is_admin == 0:             # if no-one has signed in yet is_admin is 0, has to have Boolean value
+    is_admin = users.is_admin()   # 14.4
+    if is_admin == 0:  # if no-one has signed in yet is_admin is 0, has to have Boolean value
         is_admin = False
-    #print("user_id ja is_admin", user_id,  is_admin)
     sql = "SELECT topics.id, topics.topic, Totalcounter.Threadcounter, "\
         "Totalcounter.Messagescounter, Totalcounter.Time, topics.visible "\
         "FROM topics "\
@@ -117,14 +117,14 @@ def get_list():
         "GROUP BY threads.topic_id) Totalcounter ON Totalcounter.topic_id=topics.id "\
         "WHERE topics.visible=TRUE OR :is_admin OR :user_id IN "\
         "(SELECT topics_private.user_id FROM topics_private WHERE topics_private.topic_id=topics.id) "\
-        "ORDER BY topics.visible DESC, topics.id"                             
+        "ORDER BY topics.visible DESC, topics.id"
     result = db.session.execute(sql, {"is_admin":is_admin, "user_id":user_id})
     return result.fetchall()
 
 
 def get_threads(topic_id):  #7.4 , 18.4 (add filter for edit&delete rights)
-    user_id = users.user_id()  # additional: take into acc if admin or not???
-    is_admin = users.is_admin()   
+    user_id = users.user_id()
+    is_admin = users.is_admin()
     if is_admin == 0:             # if no-one has signed in yet is_admin is 0, has to have Boolean value
         is_admin = False
     #sql="SELECT threads.id, threads.thread, allusers.username FROM threads, allusers "\
@@ -135,31 +135,31 @@ def get_threads(topic_id):  #7.4 , 18.4 (add filter for edit&delete rights)
         "FROM threads, allusers "\
         "WHERE threads.topic_id=:topic_id AND allusers.id=threads.user_id "\
         "ORDER BY threads.id DESC"
-    result = db.session.execute(sql, {"topic_id": topic_id, "user_id": user_id, "is_admin":is_admin})  #admin?
-    return result.fetchall()    
+    result = db.session.execute(sql, {"topic_id": topic_id, "user_id": user_id, "is_admin":is_admin})
+    return result.fetchall()
 
 
 def get_messages(thread_id): #8.4, 18.4, 19.4
-    user_id = users.user_id() 
-    is_admin = users.is_admin() #OR :is_admin)
+    user_id = users.user_id()
+    is_admin = users.is_admin()
     if is_admin == 0:             # if no-one has signed in yet is_admin is 0, has to have Boolean value
         is_admin = False
     sql = "SELECT allusers.username, allmessages.sent_at, allmessages.content, allmessages.id, "\
         "(allmessages.user_id=:user_id OR :is_admin=TRUE) "\
         "FROM allusers, allmessages WHERE allmessages.thread_id=:thread_id "\
         "AND allusers.id=allmessages.user_id "\
-        "ORDER BY allmessages.id"  
-    result = db.session.execute(sql, {"thread_id": thread_id, "user_id": users.user_id(), "is_admin":is_admin})   
-    return result.fetchall()       
+        "ORDER BY allmessages.id"
+    result = db.session.execute(sql, {"thread_id": thread_id, "user_id": users.user_id(), "is_admin":is_admin})
+    return result.fetchall()
 
 
 def get_path(topic_id, thread_id): #8.4
     sql = "SELECT topics.topic, threads.thread FROM topics, threads "\
-        "WHERE topics.id=:topic_id AND threads.id=:thread_id"     
+        "WHERE topics.id=:topic_id AND threads.id=:thread_id"
     result = db.session.execute(sql, {"topic_id":topic_id, "thread_id":thread_id})
-    return result.fetchone()      
+    return result.fetchone()
 
-    
+
 def get_topic_name(topic_id):   #7.4
     #print("haetaan topic name")
     sql = "SELECT topic FROM topics WHERE id=:topic_id"
@@ -179,7 +179,7 @@ def search_message(query):   #16.4, check order
     #    "WHERE topics_private.topic_id=topics.id)) "\
     #    "ORDER BY allmessages.sent_at"
     #result = db.session.execute(sql, {"query":"%"+query.lower()+"%", "user_id":user_id,
-    #        "is_admin":is_admin}) 
+    #        "is_admin":is_admin})
 
     sql = " SELECT * FROM (SELECT topics.id, topics.topic, threads.id, threads.thread, allmessages.id, "\
         "allmessages.content, allmessages.sent_at "\
@@ -189,9 +189,9 @@ def search_message(query):   #16.4, check order
         ":user_id IN (SELECT topics_private.user_id FROM topics_private "\
         "WHERE topics_private.topic_id=topics.id)) "\
         "ORDER BY allmessages.sent_at) results "\
-        "WHERE LOWER(results.content) LIKE :query"  
+        "WHERE LOWER(results.content) LIKE :query"
 
-    #sql = "SELECT topics.id, topics.topic, threads.id, threads.thread "\  
+    #sql = "SELECT topics.id, topics.topic, threads.id, threads.thread "\
     #"FROM (SELECT allmessages.id, allmessages.content, allmessages.sent_at "\
     #"FROM allmessages WHERE LOWER(allmessages.content) LIKE :query) "\ #requires [AS] foo
     #"JOIN threads ON allmessages.thread_id=threads.id  "\
@@ -199,7 +199,6 @@ def search_message(query):   #16.4, check order
     #"WHERE (topics.visible=TRUE OR :is_admin OR :user_id IN (SELECT topics_private.user_id "\
     #"FROM topics_private WHERE topics_private.topic_id=topics.id)) "\
     #"ORDER BY allmessages.sent_at"
-    result = db.session.execute(sql, {"query":"%"+query.lower()+"%", "user_id":user_id,
-            "is_admin":is_admin})     
+    result = db.session.execute(sql, {"query":"%"+query.lower()+"%", "user_id":user_id, "is_admin":is_admin})
     return result.fetchall()
-    
+
