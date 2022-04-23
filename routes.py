@@ -103,9 +103,6 @@ def hide_topic(topic_id):
     if not session.get("admin", 0):   #if not admin, can't hide topics
         abort(403)
 
-    if session["csrf_token"] != request.form["csrf_token"]:    # to take into acc. CSRF-vulnerability
-        abort(403)
-
     messages.hide_topic(topic_id)
     return redirect("/")
 
@@ -113,9 +110,6 @@ def hide_topic(topic_id):
 @app.route("/hide_secret_topic/<int:topic_id>", methods=["GET"])   #20.4 +22.4
 def hide_secret_topic(topic_id):
     if not session.get("admin", 0):   #if not admin, can't hide topics
-        abort(403)
-
-    if session["csrf_token"] != request.form["csrf_token"]:    # to take into acc. CSRF-vulnerability
         abort(403)
 
     messages.hide_secret_topic(topic_id)
