@@ -4,10 +4,26 @@ a {
     color:hotpink;
     text-decoration: none;
 }
+body {
+    margin: auto;
+    max-width: 45em;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    background: gainsboro;
+}
+
+.header {
+    background: darkgrey;
+    font-weight: bold;
+    padding: 2em 1em;
+    border-radius: .5em;
+    margin-top: .5em;
+}    
 </style>
 
-
+<body>
+<div class="header"> 
 <h1>Tervetuloa Tsoha-kurssin keskustelupalstalle!</h1>
+</div>
 <p>
 <hr>
 <h2>{{topic_name}}</h2><br>
@@ -27,7 +43,7 @@ a {
 
 <p>
 {% if session.user_id %}
-<p>Olet kirjautunut nimellä {{ session.username }}</p>
+<p>Olet kirjautunut nimellä {{ session.username }}.</p>
 <a href="/new_thread_template/{{topic_id}}">Luo uusi keskustelu</a> | <a href="/logout">Kirjaudu ulos</a> <br>
 {% else %}
 <p>
@@ -36,3 +52,4 @@ Kirjaudu sisään:
 <a href="/login">Kirjaudu</a><br>
 {% endif %}
 <p>
+</body>
