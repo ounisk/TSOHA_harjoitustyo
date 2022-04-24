@@ -4,10 +4,28 @@ a {
     color:hotpink;
     text-decoration: none;
 }
+
+body {
+    margin: auto;
+    max-width: 45em;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    background: gainsboro;
+}
+
+.header {
+    background: darkgrey;
+    font-weight: bold;
+    padding: 2em 1em;
+    border-radius: .5em;
+    margin-top: .5em;
+}
+
 </style>
 
-
+<body>
+<div class="header">    
 <h1>Tervetuloa Tsoha-kurssin keskustelupalstalle!</h1>
+</div>
 <p>
 <hr>
 <h2>Aiheet:</h2><br>
@@ -62,7 +80,7 @@ a {
 
 <p>
 {% if session.user_id %}
-<p>Olet kirjautunut nimellä {{ session.username }}</p>
+<p>Olet kirjautunut nimellä {{ session.username }}.</p>
 <a href="/search">Hae viestejä</a> | <a href="/logout">Kirjaudu ulos</a> <br>
 {% else %}
 <p>
@@ -77,4 +95,4 @@ Kirjaudu sisään:
 Olet palstan ylläpitäjä. <a href="create_new_topic" >Tässä</a> voit luoda uuden aiheen. 
 {% endif %}
 </p>
-<p>
+</body>
