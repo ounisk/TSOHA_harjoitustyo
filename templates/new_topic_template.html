@@ -1,4 +1,13 @@
 <!DOCTYPE html>
+<style>
+body {
+    margin: auto;
+    max-width: 45em;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    background: gainsboro;
+}
+</style>
+<body>
 <form action="/new_topic" method="POST">
 Aihe:<br> <input type="text" name="topic_name"> <br>
 <p>Onko aihe salainen?:</p> <br>
@@ -7,3 +16,4 @@ Aihe:<br> <input type="text" name="topic_name"> <br>
 <input type="submit" value="Luo aihe">
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
+</body>
