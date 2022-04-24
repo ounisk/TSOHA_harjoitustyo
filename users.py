@@ -23,9 +23,10 @@ def login(username, password):
             return False
 
 def logout():
-    del session["username"]
+    #del session["username"] del 24.4
     del session["user_id"]
     del session["admin"]  #added 11.4
+    del session["csrf_token"]  #added 24.4
 
 
 def register(username, password):
