@@ -1,8 +1,18 @@
 <!DOCTYPE html>
+<style>
+body {
+    margin: auto;
+    max-width: 45em;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    background: gainsboro;
+}
+</style>
+<body>
 <form action="/grant_topic_access" method="POST">
-<p>Käyttäjätunnus:</p>
+Käyttäjätunnus:<br>
 <input type="text" name="username" minlength="1" maxlength="50"> <br>
 <input type="submit" value="Anna oikeudet alueelle">
 <input type="hidden" name="topic_id" value="{{topic_id}}">
 <input type="hidden" name="csrf_token" value="{{session.csrf_token}}">
 </form>
+</body>
