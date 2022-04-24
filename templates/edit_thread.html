@@ -1,4 +1,13 @@
 <!DOCTYPE html>
+<style>
+body {
+    margin: auto;
+    max-width: 45em;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    background: gainsboro;
+}
+</style>
+<body>
 <form action="/edit_thread_header" method="POST">
 Otsikko:<br> <input type="text" name="thread_name" value="{{thread_name}}"><br>
 <input type="submit" value="Tallenna muutos">
@@ -6,3 +15,4 @@ Otsikko:<br> <input type="text" name="thread_name" value="{{thread_name}}"><br>
 <input type="hidden" name="thread_id" value="{{thread_id}}">
 <input type="hidden" name="csrf_token" value="{{session.csrf_token}}">
 </form>
+</body>
