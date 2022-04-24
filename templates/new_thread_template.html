@@ -1,4 +1,13 @@
 <!DOCTYPE html>
+<style>
+body {
+    margin: auto;
+    max-width: 45em;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    background: gainsboro;
+}
+</style>
+<body>
 <form action="/new_thread" method="POST">
 Otsikko:<br> <input type="text" name="thread_name"> <br>
 Ensimmäinen viesti:<br> <textarea name="message" rows="5" cols="40"></textarea><br>
@@ -6,3 +15,4 @@ Ensimmäinen viesti:<br> <textarea name="message" rows="5" cols="40"></textarea>
 <input type="hidden" name="topic_id" value="{{ topic_id }}">
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
+</body>
