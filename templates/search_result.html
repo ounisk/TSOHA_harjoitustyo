@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-
 <style>
 a {
     color:hotpink;
     text-decoration: none;
 }
+body {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    background: gainsboro;
+}
 </style>
-
+<body>
 <p>Hakutulos:</p>
 {% for message in messages %}
 <a href="topic/{{message[0]}}/thread/{{message[2]}}#{{message[4]}}">{{message[1]}}/{{message[3]}}</a>
@@ -16,3 +19,4 @@ a {
 {%endfor%}
 
 <a href="/">Takaisin etusivulle</a> <br>
+</body>
