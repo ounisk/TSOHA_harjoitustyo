@@ -1,4 +1,13 @@
 <!DOCTYPE html>
+<style>
+body {
+    margin: auto;
+    max-width: 45em;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    background: gainsboro;
+}
+</style>
+<body>
 <form action="/new_message" method="POST">
 Viesti:<br> <textarea name="message" rows="5" cols="40"></textarea><br>
 <input type="hidden" name="topic_id" value="{{topic_id}}">
@@ -6,4 +15,5 @@ Viesti:<br> <textarea name="message" rows="5" cols="40"></textarea><br>
 <input type="submit" value="Lähetä">
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
+</body>
 
