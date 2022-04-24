@@ -1,4 +1,13 @@
 <!DOCTYPE html>
+<style>
+body {
+    margin: auto;
+    max-width: 45em;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    background: gainsboro;
+}
+</style>
+<body>
 <form action="/edit_message_text" method="POST">
 Viesti:<br> <textarea name="message" rows="5" cols="40">{{message}}</textarea><br>
 <input type="submit" value="Tallenna">
@@ -6,3 +15,4 @@ Viesti:<br> <textarea name="message" rows="5" cols="40">{{message}}</textarea><b
 <input type="hidden" name="thread_id" value="{{thread_id}}">
 <input type="hidden" name="message_id" value="{{message_id}}">
 <input type="hidden" name="csrf_token" value="{{session.csrf_token}}">
+</body>
