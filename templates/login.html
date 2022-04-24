@@ -4,7 +4,14 @@ a {
     color:hotpink;
     text-decoration: none;
 }
+body {
+    margin: auto;
+    max-width: 45em;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    background: gainsboro;
+}
 </style>
+<body>
 <form action="/login" method="POST">
 Käyttäjätunnus:<br> <input type="text" name="username">
 <p>
@@ -15,3 +22,4 @@ Salasana:<br> <input type="password" name="password">
 </form>
 
 <a href="/register"> Tässä </a> voit luoda uuden tunnuksen.
+</body>
