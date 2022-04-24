@@ -7,7 +7,8 @@
     - ylläpitäjä oikeus poistaa aiheita on toteutettu, niin että aiheet jäävät tietokantaan (ks. kurssimateriaali, osa 2), mutta näiden piilotettujen (ts.poistettujen) aiheiden näkyvyys on rajoitettu vain adminille. Puntaroin myös vaihtoehtoa deletoida poistettu aihe kokonaan tietokannasta, mutta totesin, että voi olla halutumpaa säilyttää kuitenkin historia - tämä jättää mahdollisuuden lisätoiminnoille, esim. jos aihe haluttaisiin palauttaa näkyville joskus myöhemmin.
 - Alkuviikkoina minulla oli hankaluuksia ja kömpelyyttä testauksen ja tuotantoon ajon kanssa, koska en ollut tietoinen flaskin dev-ympäristöstä. Vinkit flaskin dev-ympäristöön sain pajasta - ja se helpotti huomattavasti työn tekemistä.
 - TODO:
-    - ulkoasu on simppeli tuulahdus 90-luvulta - jos omat taidot riittää, niin olisi pyrkimys parannella sitä.         
+    - ulkoasun viimeistely
+    - koodin putsaus ylimääräisistä sotkuista ja kommenteista         
 
 
 
