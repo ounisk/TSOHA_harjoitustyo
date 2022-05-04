@@ -6,8 +6,7 @@ from db import db
 
 
 def login(username, password):
-    #sql = "SELECT id, password FROM allusers WHERE username=:username"   # select also admin?? comm. su 3.4.2022
-    sql = "SELECT id, password, admin FROM allusers WHERE username=:username" #corrected 11.4 with admin
+    sql = "SELECT id, password, admin FROM allusers WHERE username=:username"
     result = db.session.execute(sql, {"username":username})
     user = result.fetchone()
     if not user:
@@ -16,17 +15,16 @@ def login(username, password):
         if check_password_hash(user.password, password):
             session["user_id"] = user.id
             session["username"] = username
-            session["admin"] = user.admin  #added 11.4
-            session["csrf_token"] = secrets.token_hex(16) #CSRF, see: part 4, insert into the form as well?
+            session["admin"] = user.admin
+            session["csrf_token"] = secrets.token_hex(16)
             return True
         else:
             return False
 
 def logout():
-    #del session["username"] del 24.4
     del session["user_id"]
-    del session["admin"]  #added 11.4
-    del session["csrf_token"]  #added 24.4
+    del session["admin"]
+    del session["csrf_token"]
 
 
 def register(username, password):
@@ -36,16 +34,16 @@ def register(username, password):
         db.session.execute(sql, {"username":username, "password":hash_value})
         db.session.commit()
     except:
-        return False    # if username in use, error
+        return False
     return login(username, password)
 
 def user_id():
     return session.get("user_id", 0)
 
-def is_admin():   #14.4
+def is_admin():
     return session.get("admin", 0)
 
-def get_user_id(username):   #13.4
+def get_user_id(username):
     sql = "SELECT id FROM allusers WHERE username=:username"
     result = db.session.execute(sql, {"username":username})
     user = result.fetchone()
@@ -54,12 +52,12 @@ def get_user_id(username):   #13.4
     else:
         return False
 
-def grant_access(topic_id, user_id): #13.4
+def grant_access(topic_id, user_id):
     sql = "INSERT INTO topics_private (topic_id, user_id) VALUES (:topic_id, :user_id)"
     db.session.execute(sql, {"topic_id":topic_id, "user_id":user_id})
     db.session.commit()
 
-def has_access(topic_id):   #22.4 - unauthorized can't access secret pages
+def has_access(topic_id):
     user_id = session.get("user_id", 0)
     is_admin = session.get("admin", 0)
     if is_admin == 0:
@@ -71,7 +69,7 @@ def has_access(topic_id):   #22.4 - unauthorized can't access secret pages
     result = db.session.execute(sql, {"topic_id":topic_id, "is_admin":is_admin, "user_id":user_id})
     return result.fetchone()
 
-def thread_edit_access(thread_id):   #23.4 - unauthorized can't access secret pages
+def thread_edit_access(thread_id):
     user_id = session.get("user_id", 0)
     is_admin = session.get("admin", 0)
     if is_admin == 0:
@@ -81,7 +79,7 @@ def thread_edit_access(thread_id):   #23.4 - unauthorized can't access secret pa
     result = db.session.execute(sql, {"thread_id":thread_id, "is_admin":is_admin, "user_id":user_id})
     return result.fetchone()
 
-def message_edit_access(message_id):   #23.4 - unauthorized can't access secret pages
+def message_edit_access(message_id):
     user_id = session.get("user_id", 0)
     is_admin = session.get("admin", 0)
     if is_admin == 0:
