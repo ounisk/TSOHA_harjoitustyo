@@ -8,6 +8,9 @@ body {
 }
 </style>
 <body>
+{% if error %}
+<p>Virhe: {{ error }} </p><br>
+{% endif %}       
 <form action="/new_message" method="POST">
 Viesti:<br> <textarea name="message" rows="5" cols="40"></textarea><br>
 <input type="hidden" name="topic_id" value="{{topic_id}}">
