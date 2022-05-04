@@ -12,6 +12,9 @@ body {
 }
 </style>
 <body>
+{% if error %}
+<p>Virhe: {{ error }} </p><br>
+{% endif %}    
 <form action="/login" method="POST">
 Käyttäjätunnus:<br> <input type="text" name="username">
 <p>
