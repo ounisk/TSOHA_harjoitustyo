@@ -12,7 +12,8 @@ Sovellus on testattavissa [Herokussa](https://tsoha-discussionapp.herokuapp.com/
     
 ### Toiminnot:
   - Keskustelut:
-    - Uusi keskustelu avataan luomalla sille otsikko ja kirjoittamalla aloitusviesti, vain sisäänkirjautunut käyttäjä voi luoda keskustelun. 
+    - Aiheet ovat valmiina sovelluksessa ja lisäksi ylläpitäjä voi luoda uusia aiheita. 
+    - Uusi keskustelu (liittyen tiettyyn aiheeseen) avataan luomalla sille otsikko ja kirjoittamalla aloitusviesti, vain sisäänkirjautunut käyttäjä voi luoda keskustelun. 
     - Keskusteluun osallistutaan vastaamalla ketjuun (pitää olla sisäänkirjautunut).
     - Käyttäjä, joka on luonut aiheketjun voi muokata sen otsikkoa tai lähettämänsä viestin sisältöä.
     - Lisäksi käyttäjä voi poistaa luomansa ketjun tai viestin. 
